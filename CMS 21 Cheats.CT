@@ -1,0 +1,1008 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <Forms>
+    <UDF1 Class="TCEForm" Encoding="Ascii85">t7Twd2nldAU:MM2b.}cxWeIh0Gi32eO*FuJVr273%{mcIVLrjY9FkwayqkeFJTs+v1ITB0PAn,N%,F(3tLJmcFHOoxbt,9uOD#%G.S;o-EK1EQK@5iT?@SVFOD!q{X:69mGto29Ghko/00</UDF1>
+  </Forms>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>39</ID>
+      <Description>"Enable Cheats"</Description>
+      <Options moHideChildren="1" moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
+      <Color>88FF88</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ CMS 2021 - Compatibility Check
+  Validates the current GameAssembly.dll layout.
+
+  Enable this before enabling other cheats.
+}
+
+[ENABLE]
+
+// Currency modifications
+assert(GameAssembly.dll+D7B6C6,01 B9 A0 02 00 00)
+assert(GameAssembly.dll+D7BCD1,0F B6 EA 8B F9)
+assert(GameAssembly.dll+D7BA36,01 99 AC 02 00 00)
+assert(GameAssembly.dll+D7B6DA,8B 81 A0 02 00 00)
+
+// Screws
+assert(GameAssembly.dll+9C6C7E,F3 44 0F 11 43 1C)
+assert(GameAssembly.dll+9C6C47,F3 0F 11 43 1C)
+
+// Fluids
+assert(GameAssembly.dll+1285939,48 8B 5F 18 F3 0F 11 47 10)
+
+// Repairs
+assert(GameAssembly.dll+1AFF5F2,48 8B 5C 24 68 0F 28 C6)
+assert(GameAssembly.dll+1B00FD1,8B FA 48 8B D9)
+
+// All checks passed - create a shared marker
+alloc(CMS21_Ready,1)
+
+CMS21_Ready:
+  db 01
+
+registersymbol(CMS21_Ready)
+
+[DISABLE]
+
+unregistersymbol(CMS21_Ready)
+dealloc(CMS21_Ready)
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry NoCheckbox="1">
+          <ID>14</ID>
+          <Description>"Multipliers"</Description>
+          <Options moManualExpandCollapse="1"/>
+          <Color>4242FF</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>17</ID>
+              <Description>"Money Multiplier"</Description>
+              <Options moHideChildren="1"/>
+              <Color>FFFF80</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version: 
+  Date   : 2026-11-11
+  Author : Ram
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+assert(CMS21_Ready,01)
+ 
+define(moneyHook,GameAssembly.dll+D7B6C6)
+assert(moneyHook,01 B9 A0 02 00 00)
+
+alloc(newmem,$1000,moneyHook)
+
+label(return)
+label(applyMoney)
+label(moneyMultiplier)
+
+newmem:
+  // Preserve origin money amount
+  push rdi
+
+  // Check if amount is positive
+  test edi,edi
+  jle applyMoney
+
+  // Multiply money additions
+  imul edi,dword ptr [moneyMultiplier]
+
+applyMoney:
+  // Original instruction
+  add [rcx+000002A0],edi
+
+  // Restore original RDI
+  pop rdi
+
+  jmp return
+
+align 4
+
+moneyMultiplier:
+dd 1
+
+moneyHook:
+  jmp newmem
+  nop
+
+return:
+
+registersymbol(moneyHook)
+registersymbol(moneyMultiplier)
+
+[DISABLE]
+moneyHook:
+  db 01 B9 A0 02 00 00
+
+unregistersymbol(moneyMultiplier)
+unregistersymbol(moneyHook)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: GameAssembly.dll+D7B6C6
+
+GameAssembly.dll+D7B685: E8 E6 21 54 FF        - call GameAssembly.dll+2BD870
+GameAssembly.dll+D7B68A: 48 8B 05 07 C9 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B691: 48 8B 80 B8 00 00 00  - mov rax,[rax+000000B8]
+GameAssembly.dll+D7B698: 89 B8 A8 02 00 00     - mov [rax+000002A8],edi
+GameAssembly.dll+D7B69E: 48 8B 05 F3 C8 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B6A5: 48 8B 88 B8 00 00 00  - mov rcx,[rax+000000B8]
+GameAssembly.dll+D7B6AC: 8B 81 A0 02 00 00     - mov eax,[rcx+000002A0]
+GameAssembly.dll+D7B6B2: 89 81 A4 02 00 00     - mov [rcx+000002A4],eax
+GameAssembly.dll+D7B6B8: 48 8B 05 D9 C8 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B6BF: 48 8B 88 B8 00 00 00  - mov rcx,[rax+000000B8]
+// ---------- INJECTING HERE ----------
+GameAssembly.dll+D7B6C6: 01 B9 A0 02 00 00     - add [rcx+000002A0],edi
+// ---------- DONE INJECTING  ----------
+GameAssembly.dll+D7B6CC: 48 8B 05 C5 C8 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B6D3: 48 8B 88 B8 00 00 00  - mov rcx,[rax+000000B8]
+GameAssembly.dll+D7B6DA: 8B 81 A0 02 00 00     - mov eax,[rcx+000002A0]
+GameAssembly.dll+D7B6E0: 85 C0                 - test eax,eax
+GameAssembly.dll+D7B6E2: 78 0E                 - js GameAssembly.dll+D7B6F2
+GameAssembly.dll+D7B6E4: 3D 00 E9 A4 35        - cmp eax,35A4E900
+GameAssembly.dll+D7B6E9: 7E 09                 - jle GameAssembly.dll+D7B6F4
+GameAssembly.dll+D7B6EB: B8 00 E9 A4 35        - mov eax,35A4E900
+GameAssembly.dll+D7B6F0: EB 02                 - jmp GameAssembly.dll+D7B6F4
+GameAssembly.dll+D7B6F2: 33 C0                 - xor eax,eax
+}
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>18</ID>
+                  <Description>"Value"</Description>
+                  <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">1:1x (Default)
+2:2x
+5:5x
+10:10x
+25:25x
+50:50x
+100:100x
+250:250x
+</DropDownList>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>C69900</Color>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>moneyMultiplier</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>15</ID>
+              <Description>"XP Multiplier"</Description>
+              <Options moHideChildren="1"/>
+              <Color>FFFF80</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version: 
+  Date   : 2026-11-11
+  Author : Ram
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+assert(CMS21_Ready,01)
+ 
+aobscanmodule(xpHook,GameAssembly.dll,0F B6 EA 8B F9) // should be unique
+alloc(xpCode,$1000,xpHook)
+
+label(return)
+label(xpMultiplier)
+
+xpCode:
+  // original instructions
+  movzx ebp,dl
+  mov edi,ecx
+
+  // Preserve original comparison flags
+  pushfq
+
+  // Multiply incoming XP
+  imul edi,dword ptr [xpMultiplier]
+
+  // Restore flags for the following JNE
+  popfq
+
+  jmp return
+
+align 4
+
+xpMultiplier:
+  dd 1
+
+xpHook:
+  jmp xpCode
+
+return:
+
+registersymbol(xpHook)
+registersymbol(xpMultiplier)
+
+[DISABLE]
+
+xpHook:
+  db 0F B6 EA 8B F9
+
+unregistersymbol(xpMultiplier)
+unregistersymbol(xpHook)
+dealloc(xpCode)
+
+{
+// ORIGINAL CODE - INJECTION POINT: GameAssembly.dll+D7BCD1
+
+GameAssembly.dll+D7BCB7: 48 83 C4 28           - add rsp,28
+GameAssembly.dll+D7BCBB: C3                    - ret 
+GameAssembly.dll+D7BCBC: CC                    - int 3 
+GameAssembly.dll+D7BCBD: CC                    - int 3 
+GameAssembly.dll+D7BCBE: CC                    - int 3 
+GameAssembly.dll+D7BCBF: CC                    - int 3 
+GameAssembly.dll+D7BCC0: 48 89 6C 24 20        - mov [rsp+20],rbp
+GameAssembly.dll+D7BCC5: 57                    - push rdi
+GameAssembly.dll+D7BCC6: 48 83 EC 20           - sub rsp,20
+GameAssembly.dll+D7BCCA: 80 3D 8A B6 AE 01 00  - cmp byte ptr [GameAssembly.dll+286735B],00
+// ---------- INJECTING HERE ----------
+GameAssembly.dll+D7BCD1: 0F B6 EA              - movzx ebp,dl
+// ---------- DONE INJECTING  ----------
+GameAssembly.dll+D7BCD4: 8B F9                 - mov edi,ecx
+GameAssembly.dll+D7BCD6: 75 43                 - jne GameAssembly.dll+D7BD1B
+GameAssembly.dll+D7BCD8: 48 8D 0D B9 C2 A8 01  - lea rcx,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7BCDF: E8 9C 1F 53 FF        - call GameAssembly.DllCanUnloadNow+92E0
+GameAssembly.dll+D7BCE4: 48 8D 0D F5 C3 A8 01  - lea rcx,[GameAssembly.dll+28080E0]
+GameAssembly.dll+D7BCEB: E8 90 1F 53 FF        - call GameAssembly.DllCanUnloadNow+92E0
+GameAssembly.dll+D7BCF0: 48 8D 0D F1 C3 A8 01  - lea rcx,[GameAssembly.dll+28080E8]
+GameAssembly.dll+D7BCF7: E8 84 1F 53 FF        - call GameAssembly.DllCanUnloadNow+92E0
+GameAssembly.dll+D7BCFC: 48 8D 0D B5 BA A8 01  - lea rcx,[GameAssembly.dll+28077B8]
+GameAssembly.dll+D7BD03: E8 78 1F 53 FF        - call GameAssembly.DllCanUnloadNow+92E0
+}
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>16</ID>
+                  <Description>"Value"</Description>
+                  <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">1:1x (Default)
+2:2x
+5:5x
+10:10x
+25:25x
+50:50x
+100:100x
+250:250x
+</DropDownList>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>C69900</Color>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>xpMultiplier</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>20</ID>
+              <Description>"Scrap Multiplier"</Description>
+              <Options moHideChildren="1"/>
+              <Color>FFFF80</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version:
+  Date   : 2026-11-11
+  Author : Ram
+
+  This script does blah blah blah
+}
+[ENABLE]
+assert(CMS21_Ready,01)
+
+define(scrapHook, GameAssembly.dll+D7BA36)
+assert(scrapHook,01 99 AC 02 00 00)
+
+alloc(newmem,$1000,scrapHook)
+
+label(return)
+label(applyScrap)
+label(scrapMultiplier)
+
+newmem:
+
+  // Preserve original scrap
+  push rbx
+
+  // Check if scrap is positive
+  test ebx,ebx
+  jle applyScrap
+
+  // Multiply positive scrap additions
+  imul ebx,dword ptr [scrapMultiplier]
+
+applyScrap:
+  // Execute original
+  add [rcx+000002AC],ebx
+
+  // Restore original RBX
+  pop rbx
+
+  jmp return
+
+align 4
+
+scrapMultiplier:
+  dd 1
+
+scrapHook:
+  jmp newmem
+  nop
+
+return:
+
+registersymbol(scrapMultiplier)
+ 
+[DISABLE]
+
+scrapHook:
+  db 01 99 AC 02 00 00
+
+unregistersymbol(scrapMultiplier)
+dealloc(newmem)
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>21</ID>
+                  <Description>"Value"</Description>
+                  <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">1:1x (Default)
+2:2x
+5:5x
+10:10x
+25:25x
+50:50x
+100:100x
+250:250x
+</DropDownList>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>C69900</Color>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>scrapMultiplier</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry NoCheckbox="1">
+          <ID>23</ID>
+          <Description>"Quality of Life's"</Description>
+          <Options moManualExpandCollapse="1"/>
+          <Color>4242FF</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"Free Purchases"</Description>
+              <Color>FF80FF</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version: 
+  Date   : 2026-11-11
+  Author : Ram
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+assert(CMS21_Ready,01)
+ 
+define(freeHook,GameAssembly.dll+D7B6DA)
+assert(freeHook,8B 81 A0 02 00 00)
+
+alloc(newmem,$1000,freeHook)
+
+label(return)
+label(normal)
+
+newmem:
+  // Preserve original flags
+  pushfq
+
+  // Check whether transaction is negative
+  test edi,edi
+  jns normal
+
+  // Negative transaction: undo the deduction
+  sub dword ptr [rcx+0000002A0],edi
+
+normal:
+  // Restore flags
+  popfq
+
+  // Original instruction
+  mov eax,[rcx+000002A0]
+
+  jmp return
+
+freeHook:
+  jmp newmem
+  nop
+
+return:
+
+[DISABLE]
+freeHook:
+  db 8B 81 A0 02 00 00
+
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: GameAssembly.dll+D7B6C6
+
+GameAssembly.dll+D7B685: E8 E6 21 54 FF        - call GameAssembly.dll+2BD870
+GameAssembly.dll+D7B68A: 48 8B 05 07 C9 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B691: 48 8B 80 B8 00 00 00  - mov rax,[rax+000000B8]
+GameAssembly.dll+D7B698: 89 B8 A8 02 00 00     - mov [rax+000002A8],edi
+GameAssembly.dll+D7B69E: 48 8B 05 F3 C8 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B6A5: 48 8B 88 B8 00 00 00  - mov rcx,[rax+000000B8]
+GameAssembly.dll+D7B6AC: 8B 81 A0 02 00 00     - mov eax,[rcx+000002A0]
+GameAssembly.dll+D7B6B2: 89 81 A4 02 00 00     - mov [rcx+000002A4],eax
+GameAssembly.dll+D7B6B8: 48 8B 05 D9 C8 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B6BF: 48 8B 88 B8 00 00 00  - mov rcx,[rax+000000B8]
+GameAssembly.dll+D7B6C6: 01 B9 A0 02 00 00     - add [rcx+000002A0],edi
+GameAssembly.dll+D7B6CC: 48 8B 05 C5 C8 A8 01  - mov rax,[GameAssembly.dll+2807F98]
+GameAssembly.dll+D7B6D3: 48 8B 88 B8 00 00 00  - mov rcx,[rax+000000B8]
+// ---------- INJECTING HERE ----------
+GameAssembly.dll+D7B6DA: 8B 81 A0 02 00 00     - mov eax,[rcx+000002A0]
+// ---------- DONE INJECTING  ----------
+GameAssembly.dll+D7B6E0: 85 C0                 - test eax,eax
+GameAssembly.dll+D7B6E2: 78 0E                 - js GameAssembly.dll+D7B6F2
+GameAssembly.dll+D7B6E4: 3D 00 E9 A4 35        - cmp eax,35A4E900
+GameAssembly.dll+D7B6E9: 7E 09                 - jle GameAssembly.dll+D7B6F4
+GameAssembly.dll+D7B6EB: B8 00 E9 A4 35        - mov eax,35A4E900
+GameAssembly.dll+D7B6F0: EB 02                 - jmp GameAssembly.dll+D7B6F4
+GameAssembly.dll+D7B6F2: 33 C0                 - xor eax,eax
+}
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>34</ID>
+              <Description>"Instant Unscrew"</Description>
+              <Color>FF80FF</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version: 
+  Date   : 2026-11-11
+  Author : Ram
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+assert(CMS21_Ready,01)
+ 
+define(unscrewHook,GameAssembly.dll+9C6C7E)
+assert(unscrewHook,F3 44 0F 11 43 1C)
+
+alloc(unscrewMem,$1000,unscrewHook)
+
+label(unscrewReturn)
+
+unscrewMem:
+  // Instantly reach the unmounted state (0.0)
+  mov dword ptr [rbx+1C],00000000
+
+  // Return to original game execution
+  jmp unscrewReturn
+
+unscrewHook:
+  jmp unscrewMem
+  nop
+
+unscrewReturn:
+
+[DISABLE]
+
+unscrewHook:
+  // Restore original instruction
+  db F3 44 0F 11 43 1C
+
+dealloc(unscrewMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: GameAssembly.dll+9C6C7E
+
+GameAssembly.dll+9C6C4E: E8 1D A4 C0 00           - call UnityEngine.Time.get_deltaTime
+GameAssembly.dll+9C6C53: 33 C9                    - xor ecx,ecx
+GameAssembly.dll+9C6C55: 0F 28 F0                 - movaps xmm6,xmm0
+GameAssembly.dll+9C6C58: E8 C3 A3 C0 00           - call UnityEngine.Time.get_time
+GameAssembly.dll+9C6C5D: F3 0F 59 05 CB 4B B1 01  - mulss xmm0,[GameAssembly.dll+24DB830]
+GameAssembly.dll+9C6C65: E8 C6 F2 95 FF           - call GameAssembly.dll+325F30
+GameAssembly.dll+9C6C6A: 0F 54 05 DF 5A B1 01     - andps xmm0,[GameAssembly.dll+24DC750]
+GameAssembly.dll+9C6C71: F3 0F 59 FE              - mulss xmm7,xmm6
+GameAssembly.dll+9C6C75: F3 0F 59 C7              - mulss xmm0,xmm7
+GameAssembly.dll+9C6C79: F3 44 0F 5C C0           - subss xmm8,xmm0
+// ---------- INJECTING HERE ----------
+GameAssembly.dll+9C6C7E: F3 44 0F 11 43 1C        - movss [rbx+1C],xmm8
+// ---------- DONE INJECTING  ----------
+GameAssembly.dll+9C6C84: 44 0F 28 44 24 30        - movaps xmm8,[rsp+30]
+GameAssembly.dll+9C6C8A: 0F 28 74 24 50           - movaps xmm6,[rsp+50]
+GameAssembly.dll+9C6C8F: 48 8B 7C 24 70           - mov rdi,[rsp+70]
+GameAssembly.dll+9C6C94: 0F 28 7C 24 40           - movaps xmm7,[rsp+40]
+GameAssembly.dll+9C6C99: 48 83 C4 60              - add rsp,60
+GameAssembly.dll+9C6C9D: 5B                       - pop rbx
+GameAssembly.dll+9C6C9E: C3                       - ret 
+GameAssembly.dll+9C6C9F: 48 8D 0D AA B7 82 01     - lea rcx,[GameAssembly.dll+21F2450]
+GameAssembly.dll+9C6CA6: E8 85 5A 8E FF           - call GameAssembly.DllCanUnloadNow+7D90
+GameAssembly.dll+9C6CAB: 48 8B C8                 - mov rcx,rax
+}
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>35</ID>
+              <Description>"Instant Screw/Mount"</Description>
+              <Color>FF80FF</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version: 
+  Date   : 2026-11-11
+  Author : Ram
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+assert(CMS21_Ready,01)
+
+define(mountHook,GameAssembly.dll+9C6C47)
+assert(mountHook,F3 0F 11 43 1C)
+
+alloc(mountMem,$1000,mountHook)
+
+label(mountReturn)
+
+mountMem:
+  // Instantly reach the mounted state (1.0)
+  mov dword ptr [rbx+1C],3F800000
+
+  // Return to original game execution
+  jmp mountReturn
+
+mountHook:
+  jmp mountMem
+
+mountReturn:
+
+[DISABLE]
+
+mountHook:
+  // Restore original instruction
+  db F3 0F 11 43 1C
+
+dealloc(mountMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: GameAssembly.dll+9C6C47
+
+GameAssembly.dll+9C6C17: E8 54 A4 C0 00           - call UnityEngine.Time.get_deltaTime
+GameAssembly.dll+9C6C1C: 33 C9                    - xor ecx,ecx
+GameAssembly.dll+9C6C1E: 0F 28 F0                 - movaps xmm6,xmm0
+GameAssembly.dll+9C6C21: E8 FA A3 C0 00           - call UnityEngine.Time.get_time
+GameAssembly.dll+9C6C26: F3 0F 59 05 02 4C B1 01  - mulss xmm0,[GameAssembly.dll+24DB830]
+GameAssembly.dll+9C6C2E: E8 FD F2 95 FF           - call GameAssembly.dll+325F30
+GameAssembly.dll+9C6C33: 0F 54 05 16 5B B1 01     - andps xmm0,[GameAssembly.dll+24DC750]
+GameAssembly.dll+9C6C3A: F3 0F 59 FE              - mulss xmm7,xmm6
+GameAssembly.dll+9C6C3E: F3 0F 59 C7              - mulss xmm0,xmm7
+GameAssembly.dll+9C6C42: F3 41 0F 58 C0           - addss xmm0,xmm8
+// ---------- INJECTING HERE ----------
+GameAssembly.dll+9C6C47: F3 0F 11 43 1C           - movss [rbx+1C],xmm0
+// ---------- DONE INJECTING  ----------
+GameAssembly.dll+9C6C4C: EB 36                    - jmp GameAssembly.dll+9C6C84
+GameAssembly.dll+9C6C4E: E8 1D A4 C0 00           - call UnityEngine.Time.get_deltaTime
+GameAssembly.dll+9C6C53: 33 C9                    - xor ecx,ecx
+GameAssembly.dll+9C6C55: 0F 28 F0                 - movaps xmm6,xmm0
+GameAssembly.dll+9C6C58: E8 C3 A3 C0 00           - call UnityEngine.Time.get_time
+GameAssembly.dll+9C6C5D: F3 0F 59 05 CB 4B B1 01  - mulss xmm0,[GameAssembly.dll+24DB830]
+GameAssembly.dll+9C6C65: E8 C6 F2 95 FF           - call GameAssembly.dll+325F30
+GameAssembly.dll+9C6C6A: 0F 54 05 DF 5A B1 01     - andps xmm0,[GameAssembly.dll+24DC750]
+GameAssembly.dll+9C6C71: F3 0F 59 FE              - mulss xmm7,xmm6
+GameAssembly.dll+9C6C75: F3 0F 59 C7              - mulss xmm0,xmm7
+}
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>37</ID>
+              <Description>"Instant Refill Fluid"</Description>
+              <Color>FF80FF</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version: 
+  Date   : 2026-11-11
+  Author : new_s
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+assert(CMS21_Ready,01)
+ 
+define(fluidHook,GameAssembly.dll+1285939)
+assert(fluidHook,48 8B 5F 18 F3 0F 11 47 10)
+
+alloc(fluidMem,$1000,fluidHook)
+
+label(fluidReturn)
+label(fillFluid)
+label(original)
+label(fullValue)
+
+fluidMem:
+  // XMM0 contains the new requested fluid level
+  // [RDI+10] contains the current fluid level
+
+  ucomiss xmm0,[rdi+10]
+
+  // Ignore unordered comparisons (NaN)
+  jp original
+
+  // New level &gt; current level
+  ja fillFluid
+
+  jmp original
+
+fillFluid:
+  // Force the fluid to 100%
+  movss xmm0,[fullValue]
+  movaps xmm6,xmm0
+  jmp original
+
+original:
+  // Original overwritten instructions
+  mov rbx,[rdi+18]
+  movss [rdi+10],xmm0
+
+  jmp fluidReturn
+
+align 4
+fullValue:
+  dd (float)1.0
+
+fluidHook:
+  jmp fluidMem
+  nop 4
+
+fluidReturn:
+
+[DISABLE]
+
+fluidHook:
+  db 48 8B 5F 18 F3 0F 11 47 10
+
+dealloc(fluidMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: GameAssembly.dll+1285939
+
+GameAssembly.dll+128590E: 48 8D 0D 9B 47 57 01     - lea rcx,[GameAssembly.dll+27FA0B0]
+GameAssembly.dll+1285915: E8 66 83 02 FF           - call GameAssembly.DllCanUnloadNow+92E0
+GameAssembly.dll+128591A: C6 05 14 3A 5E 01 01     - mov byte ptr [GameAssembly.dll+2869335],01
+GameAssembly.dll+1285921: 0F 57 C0                 - xorps xmm0,xmm0
+GameAssembly.dll+1285924: 0F 2F C6                 - comiss xmm0,xmm6
+GameAssembly.dll+1285927: 77 10                    - ja GameAssembly.dll+1285939
+GameAssembly.dll+1285929: F3 0F 10 05 9B 57 25 01  - movss xmm0,[GameAssembly.dll+24DB0CC]
+GameAssembly.dll+1285931: 0F 2F F0                 - comiss xmm6,xmm0
+GameAssembly.dll+1285934: 77 03                    - ja GameAssembly.dll+1285939
+GameAssembly.dll+1285936: 0F 28 C6                 - movaps xmm0,xmm6
+// ---------- INJECTING HERE ----------
+GameAssembly.dll+1285939: 48 8B 5F 18              - mov rbx,[rdi+18]
+// ---------- DONE INJECTING  ----------
+GameAssembly.dll+128593D: F3 0F 11 47 10           - movss [rdi+10],xmm0
+GameAssembly.dll+1285942: 48 8B 0D 67 47 57 01     - mov rcx,[GameAssembly.dll+27FA0B0]
+GameAssembly.dll+1285949: F6 81 33 01 00 00 04     - test byte ptr [rcx+00000133],04
+GameAssembly.dll+1285950: 74 15                    - je GameAssembly.dll+1285967
+GameAssembly.dll+1285952: 83 B9 E0 00 00 00 00     - cmp dword ptr [rcx+000000E0],00
+GameAssembly.dll+1285959: 75 0C                    - jne GameAssembly.dll+1285967
+GameAssembly.dll+128595B: E8 10 7F 03 FF           - call GameAssembly.dll+2BD870
+GameAssembly.dll+1285960: 48 8B 0D 49 47 57 01     - mov rcx,[GameAssembly.dll+27FA0B0]
+GameAssembly.dll+1285967: 80 3D E5 6A 5E 01 00     - cmp byte ptr [GameAssembly.dll+286C453],00
+GameAssembly.dll+128596E: 75 1A                    - jne GameAssembly.dll+128598A
+}
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>38</ID>
+              <Description>"Guaranteed Repair + Green Bonus"</Description>
+              <Color>FF80FF</Color>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : Car Mechanic Simulator 2021.exe
+  Version: 
+  Date   : 2026-11-11
+  Author : Ram
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+assert(CMS21_Ready,01)
+
+define(greenHook,GameAssembly.dll+1AFF5F2)
+define(resultHook,GameAssembly.dll+1B00FD1)
+
+assert(greenHook,48 8B 5C 24 68 0F 28 C6)
+assert(resultHook,8B FA 48 8B D9)
+
+alloc(greenMem,$1000,greenHook)
+alloc(resultMem,$1000,resultHook)
+
+label(greenReturn)
+label(resultReturn)
+label(fullCondition)
+
+
+// =======================================
+// FORCE GREEN BONUS + 100% CONDITION
+// =======================================
+
+greenMem:
+  // Restore original RBX
+  mov rbx,[rsp+68]
+
+  // RDI points to the 'instant' output bool
+  mov byte ptr [rdi],01
+
+  // Return 100% condition (1.0f)
+  movss xmm0,[fullCondition]
+
+  jmp greenReturn
+
+align 4
+fullCondition:
+  dd (float)1.0
+
+
+// =======================================
+// FORCE SUCCESSFUL REPAIR RESULT
+// =======================================
+
+resultMem:
+  // BarType.Success = 1
+  mov edi,1
+
+  // Preserve original instruction
+  mov rbx,rcx
+
+  jmp resultReturn
+
+
+// =======================================
+// INSTALL HOOKS
+// =======================================
+
+greenHook:
+  jmp greenMem
+  nop 3
+
+greenReturn:
+
+resultHook:
+  jmp resultMem
+
+resultReturn:
+
+
+[DISABLE]
+
+GameAssembly.dll+1AFF5F2:
+  db 48 8B 5C 24 68 0F 28 C6
+
+GameAssembly.dll+1B00FD1:
+  db 8B FA 48 8B D9
+
+dealloc(greenMem)
+dealloc(resultMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: GameAssembly.dll+1AFF5F2
+
+GameAssembly.dll+1AFF5CA: 48 8B 05 4F D1 D6 00  - mov rax,[GameAssembly.dll+286C720]
+GameAssembly.dll+1AFF5D1: 48 85 C0              - test rax,rax
+GameAssembly.dll+1AFF5D4: 75 18                 - jne GameAssembly.dll+1AFF5EE
+GameAssembly.dll+1AFF5D6: 48 8D 0D 7B 39 68 00  - lea rcx,[GameAssembly.dll+2182F58]
+GameAssembly.dll+1AFF5DD: E8 FE 0D 7B FE        - call GameAssembly.DllCanUnloadNow+BA40
+GameAssembly.dll+1AFF5E2: 48 85 C0              - test rax,rax
+GameAssembly.dll+1AFF5E5: 74 6E                 - je GameAssembly.dll+1AFF655
+GameAssembly.dll+1AFF5E7: 48 89 05 32 D1 D6 00  - mov [GameAssembly.dll+286C720],rax
+GameAssembly.dll+1AFF5EE: 8B CB                 - mov ecx,ebx
+GameAssembly.dll+1AFF5F0: FF D0                 - call rax
+// ---------- INJECTING HERE ----------
+GameAssembly.dll+1AFF5F2: 48 8B 5C 24 68        - mov rbx,[rsp+68]
+// ---------- DONE INJECTING  ----------
+GameAssembly.dll+1AFF5F7: 0F 28 C6              - movaps xmm0,xmm6
+GameAssembly.dll+1AFF5FA: 0F 28 74 24 40        - movaps xmm6,[rsp+40]
+GameAssembly.dll+1AFF5FF: 0F 28 7C 24 30        - movaps xmm7,[rsp+30]
+GameAssembly.dll+1AFF604: 48 83 C4 50           - add rsp,50
+GameAssembly.dll+1AFF608: 5F                    - pop rdi
+GameAssembly.dll+1AFF609: C3                    - ret 
+GameAssembly.dll+1AFF60A: E8 A1 56 7F FE        - call GameAssembly.dll+2F4CB0
+GameAssembly.dll+1AFF60F: CC                    - int 3 
+GameAssembly.dll+1AFF610: 48 8D 0D 41 39 68 00  - lea rcx,[GameAssembly.dll+2182F58]
+GameAssembly.dll+1AFF617: E8 14 D1 7A FE        - call GameAssembly.DllCanUnloadNow+7D90
+}
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry NoCheckbox="1">
+          <ID>13</ID>
+          <Description>"Currencies"</Description>
+          <Options moManualExpandCollapse="1"/>
+          <Color>4242FF</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>3</ID>
+              <Description>"MONEY"</Description>
+              <Color>80FFFF</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"GameAssembly.dll"+02807F98</Address>
+              <Offsets>
+                <Offset>2A0</Offset>
+                <Offset>B8</Offset>
+                <Offset>48</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"XP"</Description>
+              <Color>80FFFF</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"GameAssembly.dll"+02747598</Address>
+              <Offsets>
+                <Offset>7F8</Offset>
+                <Offset>2A0</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"SKILL POINTS"</Description>
+              <Color>80FFFF</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"GameAssembly.dll"+027771B8</Address>
+              <Offsets>
+                <Offset>30</Offset>
+                <Offset>90</Offset>
+                <Offset>0</Offset>
+                <Offset>B8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"SCRAP"</Description>
+              <Color>80FFFF</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"GameAssembly.dll"+027EDCA8</Address>
+              <Offsets>
+                <Offset>A2C</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>xpHook :mov [r9+000002B8],eax</Description>
+      <AddressString>GameAssembly.dll+D7BFCC</AddressString>
+      <Before>
+        <Byte>8D</Byte>
+        <Byte>04</Byte>
+        <Byte>08</Byte>
+        <Byte>2B</Byte>
+        <Byte>D9</Byte>
+      </Before>
+      <Actual>
+        <Byte>41</Byte>
+        <Byte>89</Byte>
+        <Byte>81</Byte>
+        <Byte>B8</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>BE</Byte>
+        <Byte>BF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>moneyHook :add [rcx+000002A0],edi</Description>
+      <AddressString>GameAssembly.dll+D7B6C6</AddressString>
+      <Before>
+        <Byte>88</Byte>
+        <Byte>B8</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>01</Byte>
+        <Byte>B9</Byte>
+        <Byte>A0</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>05</Byte>
+        <Byte>C5</Byte>
+        <Byte>C8</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>scrapHook :add [rcx+000002AC],ebx</Description>
+      <AddressString>GameAssembly.dll+D7BA36</AddressString>
+      <Before>
+        <Byte>88</Byte>
+        <Byte>B8</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>01</Byte>
+        <Byte>99</Byte>
+        <Byte>AC</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>05</Byte>
+        <Byte>55</Byte>
+        <Byte>C5</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>MountObject :movss [rbx+1C],xmm8</Description>
+      <AddressString>GameAssembly.dll+9C6C7E</AddressString>
+      <Before>
+        <Byte>F3</Byte>
+        <Byte>44</Byte>
+        <Byte>0F</Byte>
+        <Byte>5C</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>F3</Byte>
+        <Byte>44</Byte>
+        <Byte>0F</Byte>
+        <Byte>11</Byte>
+        <Byte>43</Byte>
+        <Byte>1C</Byte>
+      </Actual>
+      <After>
+        <Byte>44</Byte>
+        <Byte>0F</Byte>
+        <Byte>28</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <LuaScript>local list = getAddressList()
+
+-- Hide the Address column
+list.Header.Sections[2].Visible = false
+
+-- Hide the Type column
+list.Header.Sections[3].Visible = false
+</LuaScript>
+</CheatTable>
